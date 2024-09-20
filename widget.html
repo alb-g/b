@@ -47,30 +47,36 @@
 
   <script>
     // Funzione per ottenere i dati meteo
-    async function getMeteoData() {
-      try {
-        // Effettua una richiesta HTTP per ottenere i dati della stazione meteo
-        const response = await fetch('https://meteoregionelazio.it/rete/stazione.php?id=RM-080');
-        const data = await response.text();
+async function getMeteoData() {
+  try {
+    // Effettua una richiesta HTTP per ottenere i dati della stazione meteo
+    const response = await fetch('https://meteoregionelazio.it/rete/stazione.php?id=RM-080');
+    const data = await response.text();
 
-        // Usa una regex per trovare il valore della temperatura nel contenuto HTML
-        const temperaturaMatch = data.match(/<span class="dato_grande">([^<]+)<\/span>/);
-        const umiditaMatch = data.match(/<span class="dato_grande">(\\d+(\\.\\d+)?)%<\/span>/);
+    // Stampa i dati ricevuti nella console per analizzare la struttura HTML
+    console.log(data);
 
-        // Estrai i valori se le regex trovano una corrispondenza
-        const temperatura = temperaturaMatch ? temperaturaMatch[1].trim() : 'N/D';
-        const umidita = umiditaMatch ? umiditaMatch[1].trim() : 'N/D';
+    // Usa una regex per trovare il valore della temperatura nel contenuto HTML
+    const temperaturaMatch = data.match(/<span class="dato_grande">([^<]+)<\/span>/);
+    const umiditaMatch = data.match(/<span class="dato_grande">(\\d+(\\.\\d+)?)%<\/span>/);
 
-        // Aggiorna l'HTML del widget con i dati
-        const widget = document.getElementById('widget');
-        widget.innerHTML = `
-          <p>Temperatura: ${temperatura}°C</p>
-          <p>Umidità: ${umidita}%</p>
-        `;
-      } catch (error) {
-        console.error('Errore nel recupero dei dati meteo:', error);
-      }
-    }
+    // Estrai i valori se le regex trovano una corrispondenza
+    const temperatura = temperaturaMatch ? temperaturaMatch[1].trim() : 'N/D';
+    const umidita = umiditaMatch ? umiditaMatch[1].trim() : 'N/D';
+
+    // Aggiorna l'HTML del widget con i dati
+    const widget = document.getElementById('widget');
+    widget.innerHTML = `
+      <p>Temperatura: ${temperatura}°C</p>
+      <p>Umidità: ${umidita}%</p>
+    `;
+  } catch (error) {
+    console.error('Errore nel recupero dei dati meteo:', error);
+    const widget = document.getElementById('widget');
+    widget.innerHTML = '<p>Errore nel caricamento dei dati</p>';
+  }
+}
+
 
     // Frequenza di aggiornamento del widget: ogni 60 secondi
     const refreshFrequency = 60000;
